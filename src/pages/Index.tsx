@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ScanFace, TrendingUp, Sparkles, ChevronRight } from "lucide-react";
 import { getScans } from "@/lib/store";
 import ScoreRing from "@/components/ScoreRing";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const tips = [
   "Hydration is the #1 factor for glowing skin. Aim for 8 glasses daily.",
