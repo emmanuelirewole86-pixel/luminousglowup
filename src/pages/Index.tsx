@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ScanFace, TrendingUp, Sparkles, ChevronRight } from "lucide-react";
 import { getScans } from "@/lib/store";
 import ScoreRing from "@/components/ScoreRing";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const tips = [
   "Hydration is the #1 factor for glowing skin. Aim for 8 glasses daily.",
@@ -21,7 +22,7 @@ const Home = () => {
   return (
     <div className="min-h-screen pb-24 bg-gradient-soft">
       {/* Header */}
-      <div className="px-6 pt-14 pb-6">
+      <div className="px-6 pt-14 pb-6 flex items-start justify-between">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -32,6 +33,7 @@ const Home = () => {
             Lumina<span className="text-gradient">Face</span>
           </h1>
         </motion.div>
+        <ThemeToggle />
       </div>
 
       <div className="px-5 space-y-5">
