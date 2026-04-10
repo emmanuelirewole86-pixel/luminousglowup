@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import BottomNav from "@/components/BottomNav";
 import Index from "./pages/Index";
 import ScanFacePage from "./pages/ScanFace";
@@ -17,23 +18,25 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/scan" element={<ScanFacePage />} />
-          <Route path="/results/:id" element={<ScanResults />} />
-          <Route path="/my-scans" element={<MyScans />} />
-          <Route path="/improve" element={<ImprovementHub />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/survey" element={<Survey />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <BottomNav />
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/scan" element={<ScanFacePage />} />
+            <Route path="/results/:id" element={<ScanResults />} />
+            <Route path="/my-scans" element={<MyScans />} />
+            <Route path="/improve" element={<ImprovementHub />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/survey" element={<Survey />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <BottomNav />
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
