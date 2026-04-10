@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { saveSurvey, setOnboarded, type SurveyData } from "@/lib/store";
 
 interface Question {
@@ -61,7 +61,6 @@ const Survey = () => {
 
   return (
     <div className="min-h-screen bg-gradient-soft flex flex-col">
-      {/* Header */}
       <div className="px-5 pt-14 pb-2 flex items-center justify-between">
         <button
           onClick={() => (step > 0 ? setStep(step - 1) : navigate("/"))}
@@ -117,7 +116,6 @@ const Survey = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Next Button */}
         <div className="py-6">
           <motion.button
             onClick={next}
@@ -130,15 +128,9 @@ const Survey = () => {
             whileTap={canProceed ? { scale: 0.97 } : {}}
           >
             {step < questions.length - 1 ? (
-              <>
-                Continue
-                <ArrowRight className="w-4 h-4" />
-              </>
+              <>Continue <ArrowRight className="w-4 h-4" /></>
             ) : (
-              <>
-                Get Started
-                <Sparkles className="w-4 h-4" />
-              </>
+              <>Get Started <Sparkles className="w-4 h-4" /></>
             )}
           </motion.button>
         </div>
@@ -146,8 +138,5 @@ const Survey = () => {
     </div>
   );
 };
-
-// Need to import Sparkles
-import { Sparkles } from "lucide-react";
 
 export default Survey;
