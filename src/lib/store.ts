@@ -18,7 +18,7 @@ export const saveScan = async (scan: ScanResult, userId: string) => {
     user_id: userId,
     scan_date: scan.date,
     image_url: scan.imageUrl,
-    scores: scan.scores as unknown as Record<string, unknown>,
+    scores: JSON.parse(JSON.stringify(scan.scores)),
     overall: scan.overall,
   }]);
   if (error) throw error;
