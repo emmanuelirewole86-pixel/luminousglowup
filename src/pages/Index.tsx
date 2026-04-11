@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ScanFace, TrendingUp, Sparkles, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import { getScans } from "@/lib/store";
+import { useAuth } from "@/hooks/useAuth";
+import { ScanResult } from "@/lib/scoring";
 import ScoreRing from "@/components/ScoreRing";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -15,19 +18,20 @@ const tips = [
 
 const Home = () => {
   const navigate = useNavigate();
-  const scans = getScans();
-  const lastScan = scans[0];
+  const { user } = useAuth();
+  const [scans, setScans] = useState<ScanResult[]>([]);
   const tipOfDay = tips[new Date().getDate() % tips.length];
+
+  useEffect(() => {
+    if (user) getScans(user.id).then(setScans);
+  }, [user]);
+
+  const lastScan = scans[0];
 
   return (
     <div className="min-h-screen pb-24 bg-gradient-soft">
-      {/* Header */}
       <div className="px-6 pt-14 pb-6 flex items-start justify-between">
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <p className="text-sm text-muted-foreground font-medium">Welcome back</p>
           <h1 className="text-2xl font-bold font-display text-foreground mt-0.5">
             Lumina<span className="text-gradient">Face</span>
@@ -37,15 +41,7 @@ const Home = () => {
       </div>
 
       <div className="px-5 space-y-5">
-        {/* Scan CTA */}
-        <motion.button
-          onClick={() => navigate("/scan")}
-          className="w-full relative overflow-hidden rounded-2xl bg-gradient-primary p-6 text-left shadow-elevated"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          whileTap={{ scale: 0.98 }}
-        >
+        <motion.button onClick={() => navigate("/scan")} className="w-full relative overflow-hidden rounded-2xl bg-gradient-primary p-6 text-left shadow-elevated" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} whileTap={{ scale: 0.98 }}>
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-primary-foreground/20 flex items-center justify-center">
@@ -65,14 +61,8 @@ const Home = () => {
           <div className="absolute right-8 -top-6 w-16 h-16 rounded-full bg-primary-foreground/5" />
         </motion.button>
 
-        {/* Last Scan Summary */}
         {lastScan && (
-          <motion.div
-            className="bg-card rounded-2xl p-5 shadow-card"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
+          <motion.div className="bg-card rounded-2xl p-5 shadow-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-primary" />
@@ -91,27 +81,14 @@ const Home = () => {
           </motion.div>
         )}
 
-        {/* Streak */}
-        <motion.div
-          className="bg-card rounded-2xl p-5 shadow-card"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
+        <motion.div className="bg-card rounded-2xl p-5 shadow-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-accent" />
             <h2 className="font-semibold text-sm text-foreground">Progress Streak</h2>
           </div>
           <div className="flex gap-1.5">
             {[...Array(7)].map((_, i) => (
-              <div
-                key={i}
-                className={`h-8 flex-1 rounded-lg flex items-center justify-center text-[10px] font-medium ${
-                  i < scans.length
-                    ? "bg-gradient-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
+              <div key={i} className={`h-8 flex-1 rounded-lg flex items-center justify-center text-[10px] font-medium ${i < scans.length ? "bg-gradient-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
                 {["M", "T", "W", "T", "F", "S", "S"][i]}
               </div>
             ))}
@@ -121,13 +98,7 @@ const Home = () => {
           </p>
         </motion.div>
 
-        {/* Tip of the Day */}
-        <motion.div
-          className="rounded-2xl p-5 bg-peach shadow-card"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
+        <motion.div className="rounded-2xl p-5 bg-peach shadow-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
           <p className="text-xs font-semibold text-accent-foreground/60 uppercase tracking-wide mb-1">💡 Tip of the Day</p>
           <p className="text-sm text-accent-foreground font-medium leading-relaxed">{tipOfDay}</p>
         </motion.div>

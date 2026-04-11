@@ -5,9 +5,11 @@ import { Camera, Upload, RotateCcw, Zap, X, AlertCircle } from "lucide-react";
 import { computeOverall, type ScanResult } from "@/lib/scoring";
 import { analyzeFace, loadModels } from "@/lib/faceAnalysis";
 import { saveScan } from "@/lib/store";
+import { useAuth } from "@/hooks/useAuth";
 
 const ScanFacePage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -19,7 +21,6 @@ const ScanFacePage = () => {
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [analysisStage, setAnalysisStage] = useState("");
 
-  // Preload face-api models on mount
   useEffect(() => {
     loadModels().then(() => setModelsReady(true)).catch(() => {});
   }, []);
@@ -29,13 +30,11 @@ const ScanFacePage = () => {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user", width: 640, height: 480 },
       });
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-      }
+      if (videoRef.current) videoRef.current.srcObject = mediaStream;
       setStream(mediaStream);
       setIsCameraOn(true);
     } catch {
-      alert("Camera access is needed to scan your face. Please allow camera permissions.");
+      alert("Camera access is needed to scan your face.");
     }
   }, []);
 
@@ -54,8 +53,7 @@ const ScanFacePage = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.drawImage(video, 0, 0);
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-    setCapturedImage(dataUrl);
+    setCapturedImage(canvas.toDataURL("image/jpeg", 0.85));
     stopCamera();
   }, [stopCamera]);
 
@@ -68,13 +66,12 @@ const ScanFacePage = () => {
   };
 
   const analyze = useCallback(async () => {
-    if (!capturedImage) return;
+    if (!capturedImage || !user) return;
     setIsAnalyzing(true);
     setAnalysisError(null);
     setAnalysisStage("Loading AI models...");
 
     try {
-      // Create an image element for face-api
       const img = new Image();
       img.crossOrigin = "anonymous";
       await new Promise<void>((resolve, reject) => {
@@ -101,7 +98,7 @@ const ScanFacePage = () => {
         scores,
         overall,
       };
-      saveScan(result);
+      await saveScan(result, user.id);
       setIsAnalyzing(false);
       navigate(`/results/${result.id}`);
     } catch (err) {
@@ -109,7 +106,7 @@ const ScanFacePage = () => {
       setAnalysisError("Analysis failed. Please try again with a different photo.");
       setIsAnalyzing(false);
     }
-  }, [capturedImage, navigate]);
+  }, [capturedImage, navigate, user]);
 
   const reset = () => {
     setCapturedImage(null);
@@ -119,79 +116,45 @@ const ScanFacePage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <div className="px-5 pt-14 pb-4 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-display font-bold text-foreground">Scan Face</h1>
-          {!modelsReady && (
-            <p className="text-xs text-muted-foreground mt-0.5">Loading AI models...</p>
-          )}
+          {!modelsReady && <p className="text-xs text-muted-foreground mt-0.5">Loading AI models...</p>}
         </div>
         {(isCameraOn || capturedImage) && (
-          <button onClick={() => { stopCamera(); reset(); }} className="text-muted-foreground">
-            <X className="w-5 h-5" />
-          </button>
+          <button onClick={() => { stopCamera(); reset(); }} className="text-muted-foreground"><X className="w-5 h-5" /></button>
         )}
       </div>
 
       <div className="flex-1 flex flex-col items-center px-5">
-        {/* Camera / Preview Area */}
         <div className="relative w-full max-w-sm aspect-[3/4] rounded-3xl overflow-hidden bg-muted mb-6">
           {isCameraOn && !capturedImage && (
             <>
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className="w-full h-full object-cover scale-x-[-1]"
-              />
-              {/* Face Guide Overlay */}
+              <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover scale-x-[-1]" />
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="w-52 h-72 rounded-[50%] border-2 border-primary-foreground/40 shadow-glow" />
               </div>
               <div className="absolute bottom-4 left-0 right-0 text-center">
-                <p className="text-xs text-primary-foreground/80 font-medium bg-foreground/30 backdrop-blur-sm rounded-full px-3 py-1 inline-block">
-                  Position your face in the oval
-                </p>
+                <p className="text-xs text-primary-foreground/80 font-medium bg-foreground/30 backdrop-blur-sm rounded-full px-3 py-1 inline-block">Position your face in the oval</p>
               </div>
             </>
           )}
-
-          {capturedImage && (
-            <img src={capturedImage} alt="Captured" className="w-full h-full object-cover" />
-          )}
-
+          {capturedImage && <img src={capturedImage} alt="Captured" className="w-full h-full object-cover" />}
           {!isCameraOn && !capturedImage && (
             <div className="w-full h-full flex flex-col items-center justify-center gap-4">
               <div className="w-20 h-28 rounded-[50%] border-2 border-dashed border-muted-foreground/30" />
               <p className="text-sm text-muted-foreground">Take a selfie or upload a photo</p>
             </div>
           )}
-
           <AnimatePresence>
             {isAnalyzing && (
-              <motion.div
-                className="absolute inset-0 bg-foreground/60 backdrop-blur-sm flex flex-col items-center justify-center gap-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <motion.div
-                  className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center"
-                  animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.2 }}
-                >
+              <motion.div className="absolute inset-0 bg-foreground/60 backdrop-blur-sm flex flex-col items-center justify-center gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <motion.div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center" animate={{ scale: [1, 1.15, 1] }} transition={{ repeat: Infinity, duration: 1.2 }}>
                   <Zap className="w-7 h-7 text-primary-foreground" />
                 </motion.div>
                 <p className="text-primary-foreground font-medium text-sm">{analysisStage}</p>
                 <div className="w-48 h-1.5 bg-primary-foreground/20 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-primary-foreground rounded-full"
-                    initial={{ width: "0%" }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 4 }}
-                  />
+                  <motion.div className="h-full bg-primary-foreground rounded-full" initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 4 }} />
                 </div>
               </motion.div>
             )}
@@ -199,77 +162,38 @@ const ScanFacePage = () => {
         </div>
 
         <canvas ref={canvasRef} className="hidden" />
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleUpload}
-        />
+        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
 
-        {/* Error Message */}
         {analysisError && (
-          <motion.div
-            className="w-full max-w-sm mb-4 p-3 rounded-2xl bg-destructive/10 border border-destructive/20 flex items-start gap-2"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+          <motion.div className="w-full max-w-sm mb-4 p-3 rounded-2xl bg-destructive/10 border border-destructive/20 flex items-start gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
             <AlertCircle className="w-4 h-4 text-destructive mt-0.5 shrink-0" />
             <p className="text-xs text-destructive">{analysisError}</p>
           </motion.div>
         )}
 
-        {/* Actions */}
         <div className="w-full max-w-sm space-y-3">
           {!capturedImage && !isCameraOn && (
             <>
-              <motion.button
-                onClick={startCamera}
-                className="w-full py-4 rounded-2xl bg-gradient-primary text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2 shadow-glow"
-                whileTap={{ scale: 0.97 }}
-              >
-                <Camera className="w-5 h-5" />
-                Take a Selfie
+              <motion.button onClick={startCamera} className="w-full py-4 rounded-2xl bg-gradient-primary text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2 shadow-glow" whileTap={{ scale: 0.97 }}>
+                <Camera className="w-5 h-5" /> Take a Selfie
               </motion.button>
-              <motion.button
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full py-4 rounded-2xl bg-card border border-border text-foreground font-semibold text-sm flex items-center justify-center gap-2 shadow-card"
-                whileTap={{ scale: 0.97 }}
-              >
-                <Upload className="w-5 h-5" />
-                Upload Photo
+              <motion.button onClick={() => fileInputRef.current?.click()} className="w-full py-4 rounded-2xl bg-card border border-border text-foreground font-semibold text-sm flex items-center justify-center gap-2 shadow-card" whileTap={{ scale: 0.97 }}>
+                <Upload className="w-5 h-5" /> Upload Photo
               </motion.button>
             </>
           )}
-
           {isCameraOn && !capturedImage && (
-            <motion.button
-              onClick={capture}
-              className="w-full py-4 rounded-2xl bg-gradient-primary text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2 shadow-glow"
-              whileTap={{ scale: 0.97 }}
-            >
-              <Camera className="w-5 h-5" />
-              Capture
+            <motion.button onClick={capture} className="w-full py-4 rounded-2xl bg-gradient-primary text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2 shadow-glow" whileTap={{ scale: 0.97 }}>
+              <Camera className="w-5 h-5" /> Capture
             </motion.button>
           )}
-
           {capturedImage && !isAnalyzing && (
             <div className="flex gap-3">
-              <motion.button
-                onClick={reset}
-                className="flex-1 py-4 rounded-2xl bg-card border border-border text-foreground font-semibold text-sm flex items-center justify-center gap-2"
-                whileTap={{ scale: 0.97 }}
-              >
-                <RotateCcw className="w-4 h-4" />
-                Retake
+              <motion.button onClick={reset} className="flex-1 py-4 rounded-2xl bg-card border border-border text-foreground font-semibold text-sm flex items-center justify-center gap-2" whileTap={{ scale: 0.97 }}>
+                <RotateCcw className="w-4 h-4" /> Retake
               </motion.button>
-              <motion.button
-                onClick={analyze}
-                className="flex-[2] py-4 rounded-2xl bg-gradient-primary text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2 shadow-glow"
-                whileTap={{ scale: 0.97 }}
-              >
-                <Zap className="w-4 h-4" />
-                Analyze Face
+              <motion.button onClick={analyze} className="flex-[2] py-4 rounded-2xl bg-gradient-primary text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2 shadow-glow" whileTap={{ scale: 0.97 }}>
+                <Zap className="w-4 h-4" /> Analyze Face
               </motion.button>
             </div>
           )}

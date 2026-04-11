@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { saveSurvey, setOnboarded, type SurveyData } from "@/lib/store";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Question {
   id: keyof SurveyData;
@@ -23,6 +24,7 @@ const questions: Question[] = [
 
 const Survey = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Partial<SurveyData>>({});
 
@@ -33,9 +35,7 @@ const Survey = () => {
   const select = (option: string) => {
     if (isMulti) {
       const current = (currentAnswer as string[]) || [];
-      const updated = current.includes(option)
-        ? current.filter((o) => o !== option)
-        : [...current, option];
+      const updated = current.includes(option) ? current.filter((o) => o !== option) : [...current, option];
       setAnswers({ ...answers, [q.id]: updated });
     } else {
       setAnswers({ ...answers, [q.id]: option });
@@ -49,11 +49,11 @@ const Survey = () => {
 
   const canProceed = isMulti ? ((currentAnswer as string[]) || []).length > 0 : !!currentAnswer;
 
-  const next = () => {
+  const next = async () => {
     if (step < questions.length - 1) {
       setStep(step + 1);
     } else {
-      saveSurvey(answers as SurveyData);
+      if (user) await saveSurvey(answers as SurveyData, user.id);
       setOnboarded();
       navigate("/");
     }
@@ -62,52 +62,25 @@ const Survey = () => {
   return (
     <div className="min-h-screen bg-gradient-soft flex flex-col">
       <div className="px-5 pt-14 pb-2 flex items-center justify-between">
-        <button
-          onClick={() => (step > 0 ? setStep(step - 1) : navigate("/"))}
-          className="text-foreground"
-        >
+        <button onClick={() => (step > 0 ? setStep(step - 1) : navigate("/"))} className="text-foreground">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex gap-1.5">
           {questions.map((_, i) => (
-            <div
-              key={i}
-              className={`h-1 rounded-full transition-all ${
-                i <= step ? "w-6 bg-gradient-primary" : "w-3 bg-muted"
-              }`}
-            />
+            <div key={i} className={`h-1 rounded-full transition-all ${i <= step ? "w-6 bg-gradient-primary" : "w-3 bg-muted"}`} />
           ))}
         </div>
-        <button onClick={() => { setOnboarded(); navigate("/"); }} className="text-xs text-muted-foreground font-medium">
-          Skip
-        </button>
+        <button onClick={() => { setOnboarded(); navigate("/"); }} className="text-xs text-muted-foreground font-medium">Skip</button>
       </div>
 
       <div className="flex-1 flex flex-col px-5 pt-8">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -30 }}
-            transition={{ duration: 0.25 }}
-            className="flex-1"
-          >
+          <motion.div key={step} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }} className="flex-1">
             <h1 className="text-2xl font-display font-bold text-foreground">{q.title}</h1>
             <p className="text-sm text-muted-foreground mt-1 mb-6">{q.subtitle}</p>
-
             <div className="space-y-3">
               {q.options.map((option) => (
-                <motion.button
-                  key={option}
-                  onClick={() => select(option)}
-                  className={`w-full py-4 px-5 rounded-2xl text-left text-sm font-medium transition-all flex items-center justify-between ${
-                    isSelected(option)
-                      ? "bg-gradient-primary text-primary-foreground shadow-glow"
-                      : "bg-card text-foreground border border-border shadow-card"
-                  }`}
-                  whileTap={{ scale: 0.98 }}
-                >
+                <motion.button key={option} onClick={() => select(option)} className={`w-full py-4 px-5 rounded-2xl text-left text-sm font-medium transition-all flex items-center justify-between ${isSelected(option) ? "bg-gradient-primary text-primary-foreground shadow-glow" : "bg-card text-foreground border border-border shadow-card"}`} whileTap={{ scale: 0.98 }}>
                   {option}
                   {isSelected(option) && <Check className="w-4 h-4" />}
                 </motion.button>
@@ -117,21 +90,8 @@ const Survey = () => {
         </AnimatePresence>
 
         <div className="py-6">
-          <motion.button
-            onClick={next}
-            disabled={!canProceed}
-            className={`w-full py-4 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-opacity ${
-              canProceed
-                ? "bg-gradient-primary text-primary-foreground shadow-glow"
-                : "bg-muted text-muted-foreground"
-            }`}
-            whileTap={canProceed ? { scale: 0.97 } : {}}
-          >
-            {step < questions.length - 1 ? (
-              <>Continue <ArrowRight className="w-4 h-4" /></>
-            ) : (
-              <>Get Started <Sparkles className="w-4 h-4" /></>
-            )}
+          <motion.button onClick={next} disabled={!canProceed} className={`w-full py-4 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-opacity ${canProceed ? "bg-gradient-primary text-primary-foreground shadow-glow" : "bg-muted text-muted-foreground"}`} whileTap={canProceed ? { scale: 0.97 } : {}}>
+            {step < questions.length - 1 ? (<>Continue <ArrowRight className="w-4 h-4" /></>) : (<>Get Started <Sparkles className="w-4 h-4" /></>)}
           </motion.button>
         </div>
       </div>
