@@ -1,8 +1,9 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Camera, Upload, RotateCcw, Zap, X } from "lucide-react";
-import { generateScores, computeOverall, type ScanResult } from "@/lib/scoring";
+import { Camera, Upload, RotateCcw, Zap, X, AlertCircle } from "lucide-react";
+import { computeOverall, type ScanResult } from "@/lib/scoring";
+import { analyzeFace, loadModels } from "@/lib/faceAnalysis";
 import { saveScan } from "@/lib/store";
 
 const ScanFacePage = () => {
@@ -14,6 +15,14 @@ const ScanFacePage = () => {
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [modelsReady, setModelsReady] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [analysisStage, setAnalysisStage] = useState("");
+
+  // Preload face-api models on mount
+  useEffect(() => {
+    loadModels().then(() => setModelsReady(true)).catch(() => {});
+  }, []);
 
   const startCamera = useCallback(async () => {
     try {
@@ -61,32 +70,63 @@ const ScanFacePage = () => {
   const analyze = useCallback(async () => {
     if (!capturedImage) return;
     setIsAnalyzing(true);
-    // Simulate analysis delay
-    await new Promise((r) => setTimeout(r, 2200));
-    const scores = generateScores();
-    const overall = computeOverall(scores);
-    const result: ScanResult = {
-      id: crypto.randomUUID(),
-      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      imageUrl: capturedImage,
-      scores,
-      overall,
-    };
-    saveScan(result);
-    setIsAnalyzing(false);
-    navigate(`/results/${result.id}`);
+    setAnalysisError(null);
+    setAnalysisStage("Loading AI models...");
+
+    try {
+      // Create an image element for face-api
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("Failed to load image"));
+        img.src = capturedImage;
+      });
+
+      setAnalysisStage("Detecting face landmarks...");
+      const scores = await analyzeFace(img);
+
+      if (!scores) {
+        setAnalysisError("No face detected. Please use a clear, front-facing photo with good lighting.");
+        setIsAnalyzing(false);
+        return;
+      }
+
+      setAnalysisStage("Computing scores...");
+      const overall = computeOverall(scores);
+      const result: ScanResult = {
+        id: crypto.randomUUID(),
+        date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+        imageUrl: capturedImage,
+        scores,
+        overall,
+      };
+      saveScan(result);
+      setIsAnalyzing(false);
+      navigate(`/results/${result.id}`);
+    } catch (err) {
+      console.error("Analysis failed:", err);
+      setAnalysisError("Analysis failed. Please try again with a different photo.");
+      setIsAnalyzing(false);
+    }
   }, [capturedImage, navigate]);
 
   const reset = () => {
     setCapturedImage(null);
     setIsAnalyzing(false);
+    setAnalysisError(null);
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="px-5 pt-14 pb-4 flex items-center justify-between">
-        <h1 className="text-xl font-display font-bold text-foreground">Scan Face</h1>
+        <div>
+          <h1 className="text-xl font-display font-bold text-foreground">Scan Face</h1>
+          {!modelsReady && (
+            <p className="text-xs text-muted-foreground mt-0.5">Loading AI models...</p>
+          )}
+        </div>
         {(isCameraOn || capturedImage) && (
           <button onClick={() => { stopCamera(); reset(); }} className="text-muted-foreground">
             <X className="w-5 h-5" />
@@ -144,13 +184,13 @@ const ScanFacePage = () => {
                 >
                   <Zap className="w-7 h-7 text-primary-foreground" />
                 </motion.div>
-                <p className="text-primary-foreground font-medium text-sm">Analyzing your face...</p>
+                <p className="text-primary-foreground font-medium text-sm">{analysisStage}</p>
                 <div className="w-48 h-1.5 bg-primary-foreground/20 rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-primary-foreground rounded-full"
                     initial={{ width: "0%" }}
                     animate={{ width: "100%" }}
-                    transition={{ duration: 2 }}
+                    transition={{ duration: 4 }}
                   />
                 </div>
               </motion.div>
@@ -166,6 +206,18 @@ const ScanFacePage = () => {
           className="hidden"
           onChange={handleUpload}
         />
+
+        {/* Error Message */}
+        {analysisError && (
+          <motion.div
+            className="w-full max-w-sm mb-4 p-3 rounded-2xl bg-destructive/10 border border-destructive/20 flex items-start gap-2"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <AlertCircle className="w-4 h-4 text-destructive mt-0.5 shrink-0" />
+            <p className="text-xs text-destructive">{analysisError}</p>
+          </motion.div>
+        )}
 
         {/* Actions */}
         <div className="w-full max-w-sm space-y-3">
