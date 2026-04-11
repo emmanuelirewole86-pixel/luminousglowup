@@ -13,14 +13,14 @@ export interface SurveyData {
 // ---- Scans ----
 
 export const saveScan = async (scan: ScanResult, userId: string) => {
-  const { error } = await supabase.from("scans").insert({
+  const { error } = await supabase.from("scans").insert([{
     id: scan.id,
     user_id: userId,
     scan_date: scan.date,
     image_url: scan.imageUrl,
     scores: scan.scores as unknown as Record<string, unknown>,
     overall: scan.overall,
-  });
+  }]);
   if (error) throw error;
 };
 
