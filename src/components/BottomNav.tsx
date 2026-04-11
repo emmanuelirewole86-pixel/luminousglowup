@@ -15,7 +15,7 @@ const BottomNav = () => {
   const navigate = useNavigate();
 
   // Hide nav on certain pages
-  const hiddenPaths = ["/survey", "/results"];
+  const hiddenPaths = ["/survey", "/results", "/auth"];
   if (hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
 
   return (
