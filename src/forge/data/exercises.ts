@@ -1,0 +1,98 @@
+export interface Exercise {
+  id: string;
+  name: string;
+  category: string;
+  muscle: string;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  description: string;
+  steps: string[];
+  tips: string[];
+  emoji: string;
+}
+
+export const exerciseCategories = [
+  "All", "Chest", "Back", "Shoulders", "Arms", "Legs", "Core", "Cardio", "Full Body", "Mobility"
+];
+
+export const exercises: Exercise[] = [
+  { id: "e1", name: "Barbell Bench Press", category: "Chest", muscle: "Pectorals, Triceps, Anterior Deltoids", difficulty: "Intermediate", emoji: "🏋️",
+    description: "The king of chest exercises. Builds mass and strength in the entire chest.",
+    steps: ["Lie flat on bench, feet planted", "Grip bar slightly wider than shoulder-width", "Unrack and lower bar to mid-chest", "Press up explosively to lockout", "Keep shoulder blades retracted throughout"],
+    tips: ["Arch your back slightly for better leverage", "Don't bounce the bar off your chest", "Use a spotter for heavy sets"] },
+  { id: "e2", name: "Incline Dumbbell Press", category: "Chest", muscle: "Upper Pectorals, Anterior Deltoids", difficulty: "Intermediate", emoji: "💪",
+    description: "Targets the upper chest for a fuller, more complete chest development.",
+    steps: ["Set bench to 30-45° incline", "Start with dumbbells at shoulder level", "Press up and slightly inward", "Lower with control to stretch position"],
+    tips: ["Don't go too steep — 30° is ideal", "Focus on the squeeze at the top"] },
+  { id: "e3", name: "Pull-Ups", category: "Back", muscle: "Latissimus Dorsi, Biceps, Rear Deltoids", difficulty: "Intermediate", emoji: "🦅",
+    description: "The ultimate back builder. Creates the V-taper physique every man wants.",
+    steps: ["Hang from bar with overhand grip", "Pull yourself up until chin clears bar", "Lower with control", "Full extension at the bottom"],
+    tips: ["Engage lats before pulling", "Avoid kipping or swinging", "Use assisted machine if needed"] },
+  { id: "e4", name: "Barbell Row", category: "Back", muscle: "Upper Back, Lats, Biceps, Rear Deltoids", difficulty: "Intermediate", emoji: "🚣",
+    description: "Builds thick back muscles and improves posture.",
+    steps: ["Hinge at hips, back flat at 45°", "Grip bar slightly wider than shoulders", "Pull bar to lower chest/upper abs", "Squeeze shoulder blades at the top"],
+    tips: ["Keep your core tight", "Don't round your lower back", "Use straps if grip fails first"] },
+  { id: "e5", name: "Overhead Press", category: "Shoulders", muscle: "Deltoids, Triceps, Upper Chest", difficulty: "Intermediate", emoji: "🎯",
+    description: "The gold standard for building strong, capped shoulders.",
+    steps: ["Start bar at collarbone level", "Press overhead to full lockout", "Move head forward as bar passes", "Lower with control"],
+    tips: ["Squeeze glutes for stability", "Don't lean back excessively", "Full range of motion is key"] },
+  { id: "e6", name: "Lateral Raises", category: "Shoulders", muscle: "Lateral Deltoids", difficulty: "Beginner", emoji: "🦋",
+    description: "Isolates the side delts for wider, more impressive shoulders.",
+    steps: ["Stand with dumbbells at sides", "Raise arms to shoulder height", "Lead with elbows, slight bend", "Lower slowly with control"],
+    tips: ["Use lighter weight with perfect form", "Slight forward lean targets lateral head better", "Pause at the top for 1 second"] },
+  { id: "e7", name: "Barbell Curl", category: "Arms", muscle: "Biceps Brachii, Brachialis", difficulty: "Beginner", emoji: "💪",
+    description: "Classic arm builder for peak bicep development.",
+    steps: ["Stand with barbell, underhand grip", "Curl weight to shoulder level", "Squeeze biceps at the top", "Lower slowly to full extension"],
+    tips: ["Keep elbows pinned to sides", "Don't swing your body", "Try EZ-bar for wrist comfort"] },
+  { id: "e8", name: "Tricep Dips", category: "Arms", muscle: "Triceps, Lower Chest, Front Deltoids", difficulty: "Intermediate", emoji: "⬇️",
+    description: "Compound movement that builds massive triceps and chest.",
+    steps: ["Grip parallel bars, arms straight", "Lean slightly forward for chest emphasis", "Lower until upper arms are parallel", "Press back up to lockout"],
+    tips: ["Don't go too deep — shoulder safety", "Keep body controlled, no swinging", "Add weight belt when bodyweight is easy"] },
+  { id: "e9", name: "Barbell Back Squat", category: "Legs", muscle: "Quadriceps, Glutes, Hamstrings, Core", difficulty: "Intermediate", emoji: "🦵",
+    description: "The king of all exercises. Builds total lower body power and mass.",
+    steps: ["Bar on upper traps, feet shoulder-width", "Break at hips and knees simultaneously", "Descend until thighs are parallel or below", "Drive up through heels"],
+    tips: ["Keep chest up and core braced", "Knees track over toes", "Don't let knees cave inward"] },
+  { id: "e10", name: "Romanian Deadlift", category: "Legs", muscle: "Hamstrings, Glutes, Lower Back", difficulty: "Intermediate", emoji: "🎯",
+    description: "Targets the posterior chain for stronger hamstrings and better posture.",
+    steps: ["Stand with bar at hip level", "Hinge at hips, pushing them back", "Lower bar along thighs to mid-shin", "Drive hips forward to return"],
+    tips: ["Keep bar close to your body", "Slight bend in knees, not a squat", "Feel the stretch in hamstrings"] },
+  { id: "e11", name: "Hanging Leg Raises", category: "Core", muscle: "Lower Abs, Hip Flexors", difficulty: "Intermediate", emoji: "🎪",
+    description: "Advanced core exercise that builds visible lower abs.",
+    steps: ["Hang from pull-up bar", "Raise legs to parallel or higher", "Control the descent", "Avoid swinging"],
+    tips: ["Start with knee raises if too hard", "Engage core before lifting", "Slow negatives build strength faster"] },
+  { id: "e12", name: "Plank", category: "Core", muscle: "Transverse Abdominis, Rectus Abdominis", difficulty: "Beginner", emoji: "🧱",
+    description: "Foundation core exercise that builds stability and endurance.",
+    steps: ["Forearms on ground, body straight", "Engage core, squeeze glutes", "Hold position without sagging", "Breathe steadily"],
+    tips: ["Don't let hips drop or pike up", "Look at the floor to keep neck neutral", "Progress to longer holds or add weight"] },
+  { id: "e13", name: "Push-Ups", category: "Full Body", muscle: "Chest, Triceps, Shoulders, Core", difficulty: "Beginner", emoji: "🔥",
+    description: "The ultimate bodyweight exercise. Do them anywhere, anytime.",
+    steps: ["Hands slightly wider than shoulders", "Lower chest to just above ground", "Push up to full arm extension", "Keep body in straight line throughout"],
+    tips: ["Engage core to prevent hip sag", "Vary hand position for different emphasis", "Progress to archer and one-arm push-ups"] },
+  { id: "e14", name: "Burpees", category: "Cardio", muscle: "Full Body", difficulty: "Intermediate", emoji: "🏃",
+    description: "High-intensity full body cardio that torches fat and builds endurance.",
+    steps: ["Stand tall, then squat down", "Kick feet back to push-up position", "Perform a push-up", "Jump feet forward, then explode upward"],
+    tips: ["Scale by removing the push-up", "Focus on form over speed", "Great for HIIT intervals"] },
+  { id: "e15", name: "Cat-Cow Stretch", category: "Mobility", muscle: "Spine, Core", difficulty: "Beginner", emoji: "🐱",
+    description: "Essential mobility drill for spine health and posture improvement.",
+    steps: ["Start on all fours", "Inhale: arch back, look up (cow)", "Exhale: round back, tuck chin (cat)", "Flow between positions for 10 reps"],
+    tips: ["Move with your breath", "Great for morning routines", "Helps relieve lower back tension"] },
+  { id: "e16", name: "Face Pulls", category: "Shoulders", muscle: "Rear Deltoids, Rotator Cuff, Upper Back", difficulty: "Beginner", emoji: "🎯",
+    description: "Essential for shoulder health, posture, and rear delt development.",
+    steps: ["Set cable at face height", "Pull rope to face, elbows high", "Externally rotate at the end", "Squeeze shoulder blades together"],
+    tips: ["Light weight, high reps (15-20)", "Do these every workout for shoulder health", "Focus on the squeeze, not the weight"] },
+  { id: "e17", name: "Dumbbell Lunges", category: "Legs", muscle: "Quadriceps, Glutes, Hamstrings", difficulty: "Beginner", emoji: "🚶",
+    description: "Unilateral leg exercise that builds balance and corrects imbalances.",
+    steps: ["Hold dumbbells at sides", "Step forward into lunge position", "Lower until back knee nearly touches ground", "Push through front heel to return"],
+    tips: ["Keep torso upright", "Don't let front knee pass toes", "Alternate legs or do all reps on one side"] },
+  { id: "e18", name: "Cable Crossover", category: "Chest", muscle: "Pectorals, Anterior Deltoids", difficulty: "Intermediate", emoji: "✖️",
+    description: "Isolation movement for chest definition and inner chest development.",
+    steps: ["Set cables at high position", "Step forward, slight forward lean", "Bring hands together in arc motion", "Squeeze chest at the bottom"],
+    tips: ["Focus on the stretch and squeeze", "Keep slight bend in elbows", "Great finisher exercise"] },
+  { id: "e19", name: "Farmer's Walk", category: "Full Body", muscle: "Grip, Core, Traps, Legs", difficulty: "Beginner", emoji: "🏋️",
+    description: "Simple but brutally effective for grip strength, core stability, and conditioning.",
+    steps: ["Pick up heavy dumbbells/kettlebells", "Stand tall, shoulders back", "Walk with controlled steps", "Maintain upright posture throughout"],
+    tips: ["Go heavy — challenge your grip", "Keep core tight, don't lean", "Walk 40-60 meters per set"] },
+  { id: "e20", name: "Skull Crushers", category: "Arms", muscle: "Triceps (all three heads)", difficulty: "Intermediate", emoji: "💀",
+    description: "Premier tricep isolation exercise for building arm mass.",
+    steps: ["Lie on bench with EZ-bar", "Arms extended above chest", "Lower bar to forehead by bending elbows", "Extend arms back to start"],
+    tips: ["Keep elbows pointing up, not flaring", "Use EZ-bar for wrist comfort", "Control the negative portion"] },
+];
