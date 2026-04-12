@@ -16,6 +16,13 @@ import Survey from "./pages/Survey";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
+// Forge imports
+import ForgeLayout from "./forge/components/ForgeLayout";
+import ForgeHome from "./forge/pages/ForgeHome";
+import ForgeScan from "./forge/pages/ForgeScan";
+import ForgeDiscover from "./forge/pages/ForgeDiscover";
+import ForgeProfile from "./forge/pages/ForgeProfile";
+
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -28,25 +35,33 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const AuthRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to="/forge" replace />;
   return <>{children}</>;
 };
 
 const AppRoutes = () => (
-  <>
-    <Routes>
-      <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
-      <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-      <Route path="/scan" element={<ProtectedRoute><ScanFacePage /></ProtectedRoute>} />
-      <Route path="/results/:id" element={<ProtectedRoute><ScanResults /></ProtectedRoute>} />
-      <Route path="/my-scans" element={<ProtectedRoute><MyScans /></ProtectedRoute>} />
-      <Route path="/improve" element={<ProtectedRoute><ImprovementHub /></ProtectedRoute>} />
-      <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-      <Route path="/survey" element={<ProtectedRoute><Survey /></ProtectedRoute>} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-    <BottomNav />
-  </>
+  <Routes>
+    <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
+
+    {/* Forge App */}
+    <Route path="/forge" element={<ProtectedRoute><ForgeLayout /></ProtectedRoute>}>
+      <Route index element={<ForgeHome />} />
+      <Route path="scan" element={<ForgeScan />} />
+      <Route path="discover" element={<ForgeDiscover />} />
+      <Route path="profile" element={<ForgeProfile />} />
+    </Route>
+
+    {/* Legacy LuminaFace routes */}
+    <Route path="/" element={<ProtectedRoute><><Index /><BottomNav /></></ProtectedRoute>} />
+    <Route path="/scan" element={<ProtectedRoute><><ScanFacePage /><BottomNav /></></ProtectedRoute>} />
+    <Route path="/results/:id" element={<ProtectedRoute><><ScanResults /><BottomNav /></></ProtectedRoute>} />
+    <Route path="/my-scans" element={<ProtectedRoute><><MyScans /><BottomNav /></></ProtectedRoute>} />
+    <Route path="/improve" element={<ProtectedRoute><><ImprovementHub /><BottomNav /></></ProtectedRoute>} />
+    <Route path="/profile" element={<ProtectedRoute><><Profile /><BottomNav /></></ProtectedRoute>} />
+    <Route path="/survey" element={<ProtectedRoute><Survey /></ProtectedRoute>} />
+
+    <Route path="*" element={<NotFound />} />
+  </Routes>
 );
 
 const App = () => (
