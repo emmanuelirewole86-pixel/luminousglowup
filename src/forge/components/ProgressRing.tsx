@@ -9,7 +9,7 @@ interface ProgressRingProps {
   color?: string;
 }
 
-const ProgressRing = ({ value, max = 100, size = 64, strokeWidth = 5, label, color = "#FF8FAB" }: ProgressRingProps) => {
+const ProgressRing = ({ value, max = 100, size = 64, strokeWidth = 5, label, color }: ProgressRingProps) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const progress = Math.min(value / max, 1);
@@ -19,10 +19,10 @@ const ProgressRing = ({ value, max = 100, size = 64, strokeWidth = 5, label, col
     <div className="flex flex-col items-center gap-1">
       <div className="relative" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="-rotate-90">
-          <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="#FFE4EC" strokeWidth={strokeWidth} />
+          <circle cx={size/2} cy={size/2} r={radius} fill="none" className="stroke-muted" strokeWidth={strokeWidth} />
           <motion.circle
             cx={size/2} cy={size/2} r={radius} fill="none"
-            stroke={color} strokeWidth={strokeWidth} strokeLinecap="round"
+            stroke={color || "hsl(var(--forge-primary))"} strokeWidth={strokeWidth} strokeLinecap="round"
             strokeDasharray={circumference}
             initial={{ strokeDashoffset: circumference }}
             animate={{ strokeDashoffset: offset }}
@@ -30,10 +30,10 @@ const ProgressRing = ({ value, max = 100, size = 64, strokeWidth = 5, label, col
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-sm font-bold text-[#1a1a2e]">{Math.round(value)}</span>
+          <span className="text-sm font-bold text-foreground">{Math.round(value)}</span>
         </div>
       </div>
-      {label && <span className="text-[10px] font-medium text-[#8E8E93]">{label}</span>}
+      {label && <span className="text-[10px] font-medium text-muted-foreground">{label}</span>}
     </div>
   );
 };

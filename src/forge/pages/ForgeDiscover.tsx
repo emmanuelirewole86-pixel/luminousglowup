@@ -35,8 +35,8 @@ const ForgeDiscover = () => {
           onClick={() => onSelect(item)}
           className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
             selected === item
-              ? "bg-gradient-to-r from-[#FF8FAB] to-[#FFB4C6] text-white shadow-sm"
-              : "bg-white/60 backdrop-blur-xl border border-white/50 text-[#555]"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "bg-card/60 backdrop-blur-xl border border-border text-muted-foreground"
           }`}>
           {item}
         </motion.button>
@@ -49,39 +49,39 @@ const ForgeDiscover = () => {
     return (
       <GlassCard onClick={() => setExpandedId(isOpen ? null : ex.id)} className="cursor-pointer">
         <div className="flex items-start gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF8FAB] to-[#FFB4C6] flex items-center justify-center text-lg shrink-0">{ex.emoji}</div>
+          <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-lg shrink-0">{ex.emoji}</div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
-              <p className="font-semibold text-sm text-[#1a1a2e] truncate">{ex.name}</p>
+              <p className="font-semibold text-sm text-foreground truncate">{ex.name}</p>
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
-                ex.difficulty === "Beginner" ? "bg-green-100 text-green-700" :
-                ex.difficulty === "Intermediate" ? "bg-amber-100 text-amber-700" :
-                "bg-red-100 text-red-700"
+                ex.difficulty === "Beginner" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
+                ex.difficulty === "Intermediate" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" :
+                "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
               }`}>{ex.difficulty}</span>
             </div>
-            <p className="text-[11px] text-[#8E8E93] mt-0.5">{ex.muscle}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">{ex.muscle}</p>
           </div>
         </div>
         <AnimatePresence>
           {isOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden">
-              <div className="mt-3 pt-3 border-t border-[#FFE4EC] space-y-2">
-                <p className="text-xs text-[#555]">{ex.description}</p>
+              <div className="mt-3 pt-3 border-t border-border space-y-2">
+                <p className="text-xs text-muted-foreground">{ex.description}</p>
                 <div>
-                  <p className="text-xs font-semibold text-[#1a1a2e] mb-1">Steps:</p>
+                  <p className="text-xs font-semibold text-foreground mb-1">Steps:</p>
                   <ol className="space-y-1">
                     {ex.steps.map((s, i) => (
-                      <li key={i} className="text-xs text-[#555] flex gap-2">
-                        <span className="text-[#FF8FAB] font-bold shrink-0">{i+1}.</span>{s}
+                      <li key={i} className="text-xs text-muted-foreground flex gap-2">
+                        <span className="text-primary font-bold shrink-0">{i+1}.</span>{s}
                       </li>
                     ))}
                   </ol>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#1a1a2e] mb-1">Tips:</p>
+                  <p className="text-xs font-semibold text-foreground mb-1">Tips:</p>
                   <ul className="space-y-1">
-                    {ex.tips.map((t, i) => <li key={i} className="text-xs text-[#555]">💡 {t}</li>)}
+                    {ex.tips.map((t, i) => <li key={i} className="text-xs text-muted-foreground">💡 {t}</li>)}
                   </ul>
                 </div>
               </div>
@@ -97,31 +97,31 @@ const ForgeDiscover = () => {
     return (
       <GlassCard onClick={() => setExpandedId(isOpen ? null : style.id)} className="cursor-pointer">
         <div className="flex items-start gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF8FAB] to-[#FFB4C6] flex items-center justify-center text-lg shrink-0">{style.emoji}</div>
+          <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-lg shrink-0">{style.emoji}</div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p className="font-semibold text-sm text-[#1a1a2e] truncate">{style.name}</p>
-              {style.trending && <Star className="w-3 h-3 text-[#FF8FAB] fill-[#FF8FAB] shrink-0" />}
+              <p className="font-semibold text-sm text-foreground truncate">{style.name}</p>
+              {style.trending && <Star className="w-3 h-3 text-primary fill-primary shrink-0" />}
             </div>
-            <p className="text-[11px] text-[#8E8E93] mt-0.5">{style.faceShapes.join(", ")} • {style.length}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">{style.faceShapes.join(", ")} • {style.length}</p>
           </div>
         </div>
         <AnimatePresence>
           {isOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden">
-              <div className="mt-3 pt-3 border-t border-[#FFE4EC] space-y-2">
-                <p className="text-xs text-[#555]">{style.description}</p>
+              <div className="mt-3 pt-3 border-t border-border space-y-2">
+                <p className="text-xs text-muted-foreground">{style.description}</p>
                 <div>
-                  <p className="text-xs font-semibold text-[#1a1a2e] mb-1">How to get it:</p>
+                  <p className="text-xs font-semibold text-foreground mb-1">How to get it:</p>
                   <ol className="space-y-1">
-                    {style.howTo.map((s, i) => <li key={i} className="text-xs text-[#555] flex gap-2"><span className="text-[#FF8FAB] font-bold shrink-0">{i+1}.</span>{s}</li>)}
+                    {style.howTo.map((s, i) => <li key={i} className="text-xs text-muted-foreground flex gap-2"><span className="text-primary font-bold shrink-0">{i+1}.</span>{s}</li>)}
                   </ol>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#1a1a2e] mb-1">Products:</p>
+                  <p className="text-xs font-semibold text-foreground mb-1">Products:</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {style.products.map(p => <span key={p} className="text-[10px] px-2 py-1 rounded-full bg-[#FFF0F3] text-[#FF8FAB] font-medium">{p}</span>)}
+                    {style.products.map(p => <span key={p} className="text-[10px] px-2 py-1 rounded-full bg-muted text-primary font-medium">{p}</span>)}
                   </div>
                 </div>
               </div>
@@ -137,13 +137,13 @@ const ForgeDiscover = () => {
     return (
       <GlassCard onClick={() => setExpandedId(isOpen ? null : recipe.id)} className="cursor-pointer">
         <div className="flex items-start gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF8FAB] to-[#FFB4C6] flex items-center justify-center text-lg shrink-0">{recipe.emoji}</div>
+          <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-lg shrink-0">{recipe.emoji}</div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm text-[#1a1a2e] truncate">{recipe.name}</p>
+            <p className="font-semibold text-sm text-foreground truncate">{recipe.name}</p>
             <div className="flex items-center gap-3 mt-0.5">
-              <span className="text-[10px] text-[#8E8E93] flex items-center gap-0.5"><Flame className="w-3 h-3" />{recipe.calories} cal</span>
-              <span className="text-[10px] text-[#FF8FAB] font-semibold">{recipe.protein}g protein</span>
-              <span className="text-[10px] text-[#8E8E93] flex items-center gap-0.5"><Clock className="w-3 h-3" />{recipe.prepTime}</span>
+              <span className="text-[10px] text-muted-foreground flex items-center gap-0.5"><Flame className="w-3 h-3" />{recipe.calories} cal</span>
+              <span className="text-[10px] text-primary font-semibold">{recipe.protein}g protein</span>
+              <span className="text-[10px] text-muted-foreground flex items-center gap-0.5"><Clock className="w-3 h-3" />{recipe.prepTime}</span>
             </div>
           </div>
         </div>
@@ -151,20 +151,20 @@ const ForgeDiscover = () => {
           {isOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden">
-              <div className="mt-3 pt-3 border-t border-[#FFE4EC] space-y-2">
-                <p className="text-xs text-[#555]">{recipe.description}</p>
+              <div className="mt-3 pt-3 border-t border-border space-y-2">
+                <p className="text-xs text-muted-foreground">{recipe.description}</p>
                 <div className="flex gap-3">
-                  {[{ label: "Protein", val: recipe.protein, color: "#FF8FAB" }, { label: "Carbs", val: recipe.carbs, color: "#FFB4C6" }, { label: "Fat", val: recipe.fat, color: "#FFD6E0" }].map(m => (
-                    <div key={m.label} className="flex-1 rounded-xl bg-[#FFF5F7] p-2 text-center">
-                      <p className="text-xs font-bold" style={{ color: m.color }}>{m.val}g</p>
-                      <p className="text-[10px] text-[#8E8E93]">{m.label}</p>
+                  {[{ label: "Protein", val: recipe.protein }, { label: "Carbs", val: recipe.carbs }, { label: "Fat", val: recipe.fat }].map(m => (
+                    <div key={m.label} className="flex-1 rounded-xl bg-muted p-2 text-center">
+                      <p className="text-xs font-bold text-primary">{m.val}g</p>
+                      <p className="text-[10px] text-muted-foreground">{m.label}</p>
                     </div>
                   ))}
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#1a1a2e] mb-1">Ingredients:</p>
+                  <p className="text-xs font-semibold text-foreground mb-1">Ingredients:</p>
                   <ul className="space-y-1">
-                    {recipe.ingredients.map((ing, i) => <li key={i} className="text-xs text-[#555]">• {ing}</li>)}
+                    {recipe.ingredients.map((ing, i) => <li key={i} className="text-xs text-muted-foreground">• {ing}</li>)}
                   </ul>
                 </div>
               </div>
@@ -180,29 +180,29 @@ const ForgeDiscover = () => {
     return (
       <GlassCard onClick={() => setExpandedId(isOpen ? null : outfit.id)} className="cursor-pointer">
         <div className="flex items-start gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF8FAB] to-[#FFB4C6] flex items-center justify-center text-lg shrink-0">{outfit.emoji}</div>
+          <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-lg shrink-0">{outfit.emoji}</div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm text-[#1a1a2e] truncate">{outfit.name}</p>
-            <p className="text-[11px] text-[#8E8E93] mt-0.5">{outfit.occasion} • {outfit.bodyType.join(", ")}</p>
+            <p className="font-semibold text-sm text-foreground truncate">{outfit.name}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">{outfit.occasion} • {outfit.bodyType.join(", ")}</p>
           </div>
         </div>
         <AnimatePresence>
           {isOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden">
-              <div className="mt-3 pt-3 border-t border-[#FFE4EC] space-y-2">
-                <p className="text-xs text-[#555]">{outfit.description}</p>
+              <div className="mt-3 pt-3 border-t border-border space-y-2">
+                <p className="text-xs text-muted-foreground">{outfit.description}</p>
                 <div>
-                  <p className="text-xs font-semibold text-[#1a1a2e] mb-1">Items:</p>
+                  <p className="text-xs font-semibold text-foreground mb-1">Items:</p>
                   <ul className="space-y-1">
-                    {outfit.items.map((item, i) => <li key={i} className="text-xs text-[#555]">👔 {item}</li>)}
+                    {outfit.items.map((item, i) => <li key={i} className="text-xs text-muted-foreground">👔 {item}</li>)}
                   </ul>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#1a1a2e] mb-1">Color Palette:</p>
+                  <p className="text-xs font-semibold text-foreground mb-1">Color Palette:</p>
                   <div className="flex gap-1.5">
                     {outfit.colorPalette.map((c, i) => (
-                      <span key={i} className="text-[10px] px-2 py-1 rounded-full bg-[#FFF0F3] text-[#FF8FAB] font-medium">{c}</span>
+                      <span key={i} className="text-[10px] px-2 py-1 rounded-full bg-muted text-primary font-medium">{c}</span>
                     ))}
                   </div>
                 </div>
@@ -237,19 +237,18 @@ const ForgeDiscover = () => {
   return (
     <div className="min-h-screen pb-28">
       <div className="px-5 pt-14 pb-2">
-        <h1 className="text-xl font-bold text-[#1a1a2e]">Discover</h1>
+        <h1 className="text-xl font-bold text-foreground">Discover</h1>
       </div>
 
-      {/* Tab Bar */}
       <div className="px-5 mb-3">
-        <div className="flex gap-1 p-1 rounded-2xl bg-white/40 backdrop-blur-xl border border-white/50">
+        <div className="flex gap-1 p-1 rounded-2xl bg-card/40 backdrop-blur-xl border border-border">
           {tabs.map(tab => (
             <motion.button key={tab.id} whileTap={{ scale: 0.95 }}
               onClick={() => { setTab(tab.id); setExpandedId(null); setSearch(""); }}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === tab.id
-                  ? "bg-gradient-to-r from-[#FF8FAB] to-[#FFB4C6] text-white shadow-sm"
-                  : "text-[#8E8E93]"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground"
               }`}>
               <tab.icon className="w-3.5 h-3.5" />
               {tab.label}
@@ -258,13 +257,12 @@ const ForgeDiscover = () => {
         </div>
       </div>
 
-      {/* Search */}
       <div className="px-5 mb-3">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8E8E93]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder={`Search ${activeTab}...`}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/60 backdrop-blur-xl border border-white/50 text-sm text-[#1a1a2e] placeholder:text-[#8E8E93] outline-none focus:ring-2 focus:ring-[#FF8FAB]/30" />
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-card/60 backdrop-blur-xl border border-border text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30" />
         </div>
       </div>
 
@@ -289,14 +287,14 @@ const ForgeDiscover = () => {
             {filteredRecipes.map(recipe => <RecipeCard key={recipe.id} recipe={recipe} />)}
             {selectedMealCat === "All" && (
               <GlassCard glow>
-                <h3 className="font-bold text-sm text-[#1a1a2e] mb-3">💊 Recommended Supplements</h3>
+                <h3 className="font-bold text-sm text-foreground mb-3">💊 Recommended Supplements</h3>
                 <div className="space-y-2.5">
                   {supplements.map(s => (
                     <div key={s.name} className="flex items-start gap-2.5">
                       <span className="text-base">{s.emoji}</span>
                       <div>
-                        <p className="text-xs font-semibold text-[#1a1a2e]">{s.name}</p>
-                        <p className="text-[10px] text-[#8E8E93]">{s.benefit} • {s.dosage}</p>
+                        <p className="text-xs font-semibold text-foreground">{s.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{s.benefit} • {s.dosage}</p>
                       </div>
                     </div>
                   ))}
@@ -313,13 +311,12 @@ const ForgeDiscover = () => {
           </>
         )}
 
-        {/* Empty state */}
         {((activeTab === "exercise" && !filteredExercises.length) ||
           (activeTab === "hair" && !filteredHair.length) ||
           (activeTab === "nutrition" && !filteredRecipes.length) ||
           (activeTab === "clothing" && !filteredOutfits.length)) && (
           <div className="text-center py-12">
-            <p className="text-sm text-[#8E8E93]">No results found</p>
+            <p className="text-sm text-muted-foreground">No results found</p>
           </div>
         )}
       </div>

@@ -13,12 +13,12 @@ const ForgeBottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const hiddenPaths = ["/forge/scan/results"];
+  const hiddenPaths = ["/forge/scan/results", "/forge/settings"];
   if (hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
-      <div className="mx-3 mb-3 rounded-2xl border border-white/40 bg-white/60 backdrop-blur-2xl shadow-[0_8px_32px_rgba(255,143,171,0.15)]">
+      <div className="mx-3 mb-3 rounded-2xl border border-border bg-card/60 backdrop-blur-2xl shadow-elevated">
         <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
           {tabs.map((tab) => {
             const isActive = location.pathname === tab.path || 
@@ -35,18 +35,18 @@ const ForgeBottomNav = () => {
                 {isActive && (
                   <motion.div
                     layoutId="forge-nav-indicator"
-                    className="absolute -top-0 left-4 right-4 h-[3px] rounded-full bg-gradient-to-r from-[#FF8FAB] to-[#FFB4C6]"
+                    className="absolute -top-0 left-4 right-4 h-[3px] rounded-full bg-primary"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
                 <Icon
                   className={`w-5 h-5 transition-all duration-300 ${
-                    isActive ? "text-[#FF8FAB] scale-110" : "text-[#8E8E93]"
+                    isActive ? "text-primary scale-110" : "text-muted-foreground"
                   }`}
                 />
                 <span
                   className={`text-[10px] font-semibold transition-colors duration-300 ${
-                    isActive ? "text-[#FF8FAB]" : "text-[#8E8E93]"
+                    isActive ? "text-primary" : "text-muted-foreground"
                   }`}
                 >
                   {tab.label}
