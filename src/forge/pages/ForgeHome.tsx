@@ -55,7 +55,7 @@ const ForgeHome = () => {
   const userName = user?.user_metadata?.display_name || user?.email?.split("@")[0] || "King";
 
   const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
-  const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } } };
+  const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } } };
 
   return (
     <div className="min-h-screen pb-28">
