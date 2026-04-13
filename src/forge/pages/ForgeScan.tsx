@@ -118,29 +118,26 @@ const ForgeScan = () => {
 
   return (
     <div className="min-h-screen pb-28">
-      {/* Header */}
       <div className="px-5 pt-14 pb-4 flex items-center gap-3">
         <motion.button whileTap={{ scale: 0.9 }} onClick={() => { stopCamera(); navigate("/forge"); }}
-          className="w-9 h-9 rounded-full bg-white/60 backdrop-blur-xl border border-white/50 flex items-center justify-center">
-          <ArrowLeft className="w-4 h-4 text-[#1a1a2e]" />
+          className="w-9 h-9 rounded-full bg-card/60 backdrop-blur-xl border border-border flex items-center justify-center">
+          <ArrowLeft className="w-4 h-4 text-foreground" />
         </motion.button>
-        <h1 className="text-lg font-bold text-[#1a1a2e]">Face Scan</h1>
+        <h1 className="text-lg font-bold text-foreground">Face Scan</h1>
       </div>
 
       <div className="px-5 space-y-4">
-        {/* Camera / Preview Area */}
-        <div className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-[#1a1a2e] shadow-xl">
+        <div className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-card shadow-xl">
           {!capturedImage && stream && (
             <>
               <video ref={videoRef} className="w-full h-full object-cover scale-x-[-1]" playsInline muted />
-              {/* Oval Guide */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-[70%] h-[85%] rounded-[50%] border-2 border-white/40 shadow-[inset_0_0_30px_rgba(255,143,171,0.15)]" />
+                <div className="w-[70%] h-[85%] rounded-[50%] border-2 border-primary/40 shadow-[inset_0_0_30px_hsl(var(--forge-primary)/0.15)]" />
               </div>
               {!faceInView && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                   className="absolute top-4 left-4 right-4 px-4 py-3 rounded-xl bg-black/50 backdrop-blur-lg flex items-center gap-2">
-                  <Sun className="w-4 h-4 text-[#FF8FAB]" />
+                  <Sun className="w-4 h-4 text-primary" />
                   <p className="text-white text-xs">Make sure your face is well-lit and centered</p>
                 </motion.div>
               )}
@@ -151,14 +148,13 @@ const ForgeScan = () => {
           )}
           {!capturedImage && !stream && (
             <div className="w-full h-full flex flex-col items-center justify-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
-                <Camera className="w-10 h-10 text-white/40" />
+              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
+                <Camera className="w-10 h-10 text-muted-foreground" />
               </div>
-              <p className="text-white/50 text-sm">Start camera or upload a photo</p>
+              <p className="text-muted-foreground text-sm">Start camera or upload a photo</p>
             </div>
           )}
 
-          {/* Stage overlay */}
           <AnimatePresence>
             {stage !== "idle" && stage !== "done" && stage !== "error" && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -166,7 +162,7 @@ const ForgeScan = () => {
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                  className="w-12 h-12 rounded-full border-3 border-white/20 border-t-[#FF8FAB]"
+                  className="w-12 h-12 rounded-full border-3 border-white/20 border-t-primary"
                 />
                 <p className="text-white text-sm font-medium">{stageMessages[stage]}</p>
               </motion.div>
@@ -174,24 +170,23 @@ const ForgeScan = () => {
           </AnimatePresence>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex gap-3">
           {!capturedImage ? (
             <>
               <motion.button whileTap={{ scale: 0.95 }} onClick={stream ? capture : startCamera}
-                className="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-[#FF8FAB] to-[#FFB4C6] text-white font-semibold text-sm shadow-lg flex items-center justify-center gap-2">
+                className="flex-1 py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold text-sm shadow-lg flex items-center justify-center gap-2">
                 <Camera className="w-4 h-4" />
                 {stream ? "Capture" : "Start Camera"}
               </motion.button>
               <motion.button whileTap={{ scale: 0.95 }} onClick={() => fileInputRef.current?.click()}
-                className="flex-1 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-[#1a1a2e] font-semibold text-sm flex items-center justify-center gap-2">
+                className="flex-1 py-3.5 rounded-2xl bg-card/60 backdrop-blur-xl border border-border text-foreground font-semibold text-sm flex items-center justify-center gap-2">
                 <Upload className="w-4 h-4" />
                 Upload Photo
               </motion.button>
             </>
           ) : (
             <motion.button whileTap={{ scale: 0.95 }} onClick={() => { setCapturedImage(null); setScores(null); setStage("idle"); setError(""); }}
-              className="flex-1 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-[#1a1a2e] font-semibold text-sm flex items-center justify-center gap-2">
+              className="flex-1 py-3.5 rounded-2xl bg-card/60 backdrop-blur-xl border border-border text-foreground font-semibold text-sm flex items-center justify-center gap-2">
               <RotateCcw className="w-4 h-4" />
               Retake
             </motion.button>
@@ -200,23 +195,21 @@ const ForgeScan = () => {
 
         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
 
-        {/* Error */}
         {error && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            <GlassCard className="border-[#FF8FAB]/30 bg-[#FFF0F3]/60">
-              <p className="text-sm text-[#1a1a2e]">{error}</p>
+            <GlassCard className="border-destructive/30 bg-destructive/5">
+              <p className="text-sm text-foreground">{error}</p>
             </GlassCard>
           </motion.div>
         )}
 
-        {/* Results */}
         <AnimatePresence>
           {scores && stage === "done" && (
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
               <GlassCard glow>
                 <div className="flex items-center gap-2 mb-4">
-                  <Sparkles className="w-4 h-4 text-[#FF8FAB]" />
-                  <h2 className="font-bold text-sm text-[#1a1a2e]">Face Analysis</h2>
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <h2 className="font-bold text-sm text-foreground">Face Analysis</h2>
                 </div>
                 <div className="space-y-3">
                   {[
@@ -230,29 +223,29 @@ const ForgeScan = () => {
                   ].map((s) => (
                     <div key={s.label}>
                       <div className="flex justify-between text-xs mb-1">
-                        <span className="text-[#8E8E93] font-medium">{s.label}</span>
-                        <span className="font-bold text-[#1a1a2e]">{s.value}%</span>
+                        <span className="text-muted-foreground font-medium">{s.label}</span>
+                        <span className="font-bold text-foreground">{s.value}%</span>
                       </div>
-                      <div className="h-2 rounded-full bg-[#FFE4EC] overflow-hidden">
+                      <div className="h-2 rounded-full bg-muted overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${s.value}%` }}
                           transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-                          className="h-full rounded-full bg-gradient-to-r from-[#FF8FAB] to-[#FFB4C6]"
+                          className="h-full rounded-full bg-primary"
                         />
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 pt-4 border-t border-[#FFE4EC] flex items-center justify-between">
-                  <span className="text-xs font-medium text-[#8E8E93]">Estimated Age</span>
-                  <span className="text-lg font-bold text-[#FF8FAB]">{scores.estimatedAge}</span>
+                <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
+                  <span className="text-xs font-medium text-muted-foreground">Estimated Age</span>
+                  <span className="text-lg font-bold text-primary">{scores.estimatedAge}</span>
                 </div>
               </GlassCard>
 
-              <GlassCard className="bg-gradient-to-br from-[#FFF0F3]/60 to-white/60">
-                <h3 className="font-bold text-sm text-[#1a1a2e] mb-2">Recommendations</h3>
-                <ul className="space-y-2 text-xs text-[#555]">
+              <GlassCard>
+                <h3 className="font-bold text-sm text-foreground mb-2">Recommendations</h3>
+                <ul className="space-y-2 text-xs text-muted-foreground">
                   {scores.jawline < 70 && <li>💪 Jaw exercises and mewing can improve jawline definition</li>}
                   {scores.skinHealth < 75 && <li>💧 Start a consistent skincare routine with SPF and retinol</li>}
                   {scores.symmetry < 75 && <li>🧘 Facial yoga can help balance muscle symmetry</li>}

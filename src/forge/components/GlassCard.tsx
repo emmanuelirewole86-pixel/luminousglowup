@@ -12,10 +12,9 @@ const GlassCard = ({ children, className, glow, ...props }: GlassCardProps) => (
     whileTap={{ scale: 0.98 }}
     transition={{ type: "spring", stiffness: 400, damping: 25 }}
     className={cn(
-      "rounded-2xl border border-white/50 bg-white/60 backdrop-blur-2xl p-5",
-      "shadow-[0_2px_16px_-4px_rgba(255,143,171,0.1)]",
-      "transition-shadow duration-300",
-      glow && "shadow-[0_0_24px_-4px_rgba(255,143,171,0.25)]",
+      "rounded-2xl border border-border bg-card/60 backdrop-blur-2xl p-5",
+      "shadow-card transition-shadow duration-300",
+      glow && "shadow-glow",
       className
     )}
     {...props}

@@ -13,7 +13,7 @@ export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    const stored = localStorage.getItem("luminaface_theme");
+    const stored = localStorage.getItem("forge_theme");
     if (stored === "dark" || stored === "light") return stored;
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
@@ -21,10 +21,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("luminaface_theme", theme);
-    // Update theme-color meta
+    localStorage.setItem("forge_theme", theme);
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "dark" ? "#141a26" : "#d94f6b");
+    if (meta) meta.setAttribute("content", theme === "dark" ? "#0d0d0d" : "#2D5A3D");
   }, [theme]);
 
   const toggleTheme = () => setTheme((t) => (t === "light" ? "dark" : "light"));
