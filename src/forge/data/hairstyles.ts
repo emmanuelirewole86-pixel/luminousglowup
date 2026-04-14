@@ -1,3 +1,19 @@
+import texturedCropImg from "@/assets/hairstyles/textured-crop.jpg";
+import classicFadeImg from "@/assets/hairstyles/classic-fade.jpg";
+import quiffImg from "@/assets/hairstyles/quiff.jpg";
+import buzzCutImg from "@/assets/hairstyles/buzz-cut.jpg";
+import pompadourImg from "@/assets/hairstyles/pompadour.jpg";
+import curlyFringeImg from "@/assets/hairstyles/curly-fringe.jpg";
+import slickBackImg from "@/assets/hairstyles/slick-back.jpg";
+import messyMediumImg from "@/assets/hairstyles/messy-medium.jpg";
+import undercutImg from "@/assets/hairstyles/undercut.jpg";
+import afroFadeImg from "@/assets/hairstyles/afro-fade.jpg";
+import manBunImg from "@/assets/hairstyles/man-bun.jpg";
+import frenchCropImg from "@/assets/hairstyles/french-crop.jpg";
+import taperBeardImg from "@/assets/hairstyles/taper-beard.jpg";
+import curtainsImg from "@/assets/hairstyles/curtains.jpg";
+import crewCutImg from "@/assets/hairstyles/crew-cut.jpg";
+
 export interface HairStyle {
   id: string;
   name: string;
@@ -9,6 +25,7 @@ export interface HairStyle {
   howTo: string[];
   products: string[];
   emoji: string;
+  image?: string;
 }
 
 export const faceShapes = ["All", "Oval", "Round", "Square", "Oblong", "Heart", "Diamond"];
