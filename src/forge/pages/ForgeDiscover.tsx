@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dumbbell, Scissors, Utensils, Shirt, Search, Heart, ChevronRight, Star, Clock, Flame } from "lucide-react";
 import GlassCard from "../components/GlassCard";
-import { exercises, exerciseCategories, Exercise } from "../data/exercises";
+import { exercises, exerciseCategories, Exercise, categoryImages } from "../data/exercises";
 import { hairstyles, faceShapes, HairStyle } from "../data/hairstyles";
 import { recipes, mealCategories, supplements, Recipe } from "../data/nutrition";
 import { outfits, occasions, Outfit } from "../data/clothing";
