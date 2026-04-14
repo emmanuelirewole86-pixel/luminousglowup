@@ -1,3 +1,10 @@
+import chestImg from "@/assets/exercises/chest-anatomy.jpg";
+import backImg from "@/assets/exercises/back-anatomy.jpg";
+import armsImg from "@/assets/exercises/arms-anatomy.jpg";
+import legsImg from "@/assets/exercises/legs-anatomy.jpg";
+import shouldersImg from "@/assets/exercises/shoulders-anatomy.jpg";
+import coreImg from "@/assets/exercises/core-anatomy.jpg";
+
 export interface Exercise {
   id: string;
   name: string;
@@ -9,6 +16,15 @@ export interface Exercise {
   tips: string[];
   emoji: string;
 }
+
+export const categoryImages: Record<string, string> = {
+  Chest: chestImg,
+  Back: backImg,
+  Arms: armsImg,
+  Legs: legsImg,
+  Shoulders: shouldersImg,
+  Core: coreImg,
+};
 
 export const exerciseCategories = [
   "All", "Chest", "Back", "Shoulders", "Arms", "Legs", "Core", "Cardio", "Full Body", "Mobility"
