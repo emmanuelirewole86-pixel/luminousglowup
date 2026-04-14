@@ -49,7 +49,11 @@ const ForgeDiscover = () => {
     return (
       <GlassCard onClick={() => setExpandedId(isOpen ? null : ex.id)} className="cursor-pointer">
         <div className="flex items-start gap-3">
-          <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-lg shrink-0">{ex.emoji}</div>
+          {categoryImages[ex.category] ? (
+            <img src={categoryImages[ex.category]} alt={ex.category} className="w-11 h-11 rounded-xl object-cover shrink-0" loading="lazy" />
+          ) : (
+            <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-lg shrink-0">{ex.emoji}</div>
+          )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
               <p className="font-semibold text-sm text-foreground truncate">{ex.name}</p>
@@ -97,7 +101,11 @@ const ForgeDiscover = () => {
     return (
       <GlassCard onClick={() => setExpandedId(isOpen ? null : style.id)} className="cursor-pointer">
         <div className="flex items-start gap-3">
-          <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-lg shrink-0">{style.emoji}</div>
+          {style.image ? (
+            <img src={style.image} alt={style.name} className="w-14 h-14 rounded-xl object-cover shrink-0" loading="lazy" />
+          ) : (
+            <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-lg shrink-0">{style.emoji}</div>
+          )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <p className="font-semibold text-sm text-foreground truncate">{style.name}</p>
