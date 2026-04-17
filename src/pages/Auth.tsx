@@ -8,18 +8,28 @@ import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const isSignUp = mode === "signup";
+  const isForgot = mode === "forgot";
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      if (isSignUp) {
+      if (isForgot) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        toast.success("Check your email for a password reset link");
+        setMode("signin");
+      } else if (isSignUp) {
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -110,25 +120,39 @@ const Auth = () => {
               className="w-full py-3.5 pl-11 pr-4 rounded-2xl bg-card border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
-          <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="w-full py-3.5 pl-11 pr-11 rounded-2xl bg-card border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
-            >
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
-          </div>
+          {!isForgot && (
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className="w-full py-3.5 pl-11 pr-11 rounded-2xl bg-card border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          )}
+
+          {!isForgot && !isSignUp && (
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => setMode("forgot")}
+                className="text-xs text-primary font-semibold"
+              >
+                Forgot password?
+              </button>
+            </div>
+          )}
 
           <motion.button
             type="submit"
@@ -136,18 +160,35 @@ const Auth = () => {
             className="w-full py-3.5 rounded-2xl bg-gradient-primary text-primary-foreground font-semibold text-sm shadow-glow disabled:opacity-50"
             whileTap={{ scale: 0.97 }}
           >
-            {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
+            {loading
+              ? "Please wait..."
+              : isForgot
+              ? "Send reset link"
+              : isSignUp
+              ? "Create Account"
+              : "Sign In"}
           </motion.button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
-          <button
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-primary font-semibold"
-          >
-            {isSignUp ? "Sign in" : "Sign up"}
-          </button>
+          {isForgot ? (
+            <>
+              Remembered it?{" "}
+              <button onClick={() => setMode("signin")} className="text-primary font-semibold">
+                Sign in
+              </button>
+            </>
+          ) : (
+            <>
+              {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+              <button
+                onClick={() => setMode(isSignUp ? "signin" : "signup")}
+                className="text-primary font-semibold"
+              >
+                {isSignUp ? "Sign in" : "Sign up"}
+              </button>
+            </>
+          )}
         </p>
       </motion.div>
     </div>
