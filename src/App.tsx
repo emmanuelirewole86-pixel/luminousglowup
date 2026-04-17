@@ -14,6 +14,7 @@ import ForgeDiscover from "./forge/pages/ForgeDiscover";
 import ForgeProfile from "./forge/pages/ForgeProfile";
 import ForgeSettings from "./forge/pages/ForgeSettings";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
 const AppRoutes = () => (
   <Routes>
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
+    <Route path="/reset-password" element={<ResetPassword />} />
 
     {/* Forge App — Primary */}
     <Route path="/forge" element={<ProtectedRoute><ForgeLayout /></ProtectedRoute>}>
