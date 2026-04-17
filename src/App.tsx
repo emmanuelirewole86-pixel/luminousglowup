@@ -29,7 +29,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const AuthRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (user) return <Navigate to="/forge" replace />;
+  if (user) return <Navigate to="/" replace />;
   return <>{children}</>;
 };
 
@@ -38,8 +38,8 @@ const AppRoutes = () => (
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
     <Route path="/reset-password" element={<ResetPassword />} />
 
-    {/* Forge App — Primary */}
-    <Route path="/forge" element={<ProtectedRoute><ForgeLayout /></ProtectedRoute>}>
+    {/* Forge App — Primary, mounted at root */}
+    <Route path="/" element={<ProtectedRoute><ForgeLayout /></ProtectedRoute>}>
       <Route index element={<ForgeHome />} />
       <Route path="scan" element={<ForgeScan />} />
       <Route path="discover" element={<ForgeDiscover />} />
@@ -47,8 +47,12 @@ const AppRoutes = () => (
       <Route path="settings" element={<ForgeSettings />} />
     </Route>
 
-    {/* Redirect root to Forge */}
-    <Route path="/" element={<Navigate to="/forge" replace />} />
+    {/* Legacy /forge paths redirect to root */}
+    <Route path="/forge" element={<Navigate to="/" replace />} />
+    <Route path="/forge/scan" element={<Navigate to="/scan" replace />} />
+    <Route path="/forge/discover" element={<Navigate to="/discover" replace />} />
+    <Route path="/forge/profile" element={<Navigate to="/profile" replace />} />
+    <Route path="/forge/settings" element={<Navigate to="/settings" replace />} />
 
     <Route path="*" element={<NotFound />} />
   </Routes>

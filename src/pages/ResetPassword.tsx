@@ -46,7 +46,7 @@ const ResetPassword = () => {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       toast.success("Password updated! You're now signed in.");
-      navigate("/forge", { replace: true });
+      navigate("/", { replace: true });
     } catch (error: any) {
       toast.error(error.message || "Failed to update password");
     } finally {
