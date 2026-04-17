@@ -40,7 +40,7 @@ const Auth = () => {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/forge", { replace: true });
+        navigate("/", { replace: true });
       }
     } catch (error: any) {
       toast.error(error.message || "Authentication failed");
