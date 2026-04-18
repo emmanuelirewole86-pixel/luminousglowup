@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -44,29 +68,44 @@ export type Database = {
       scans: {
         Row: {
           created_at: string
+          eye_color: string | null
+          face_shape: string | null
+          hair_color: string | null
           id: string
           image_url: string
           overall: number
+          recommendations: Json | null
           scan_date: string
           scores: Json
+          skin_tone: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
+          eye_color?: string | null
+          face_shape?: string | null
+          hair_color?: string | null
           id?: string
           image_url: string
           overall: number
+          recommendations?: Json | null
           scan_date: string
           scores: Json
+          skin_tone?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
+          eye_color?: string | null
+          face_shape?: string | null
+          hair_color?: string | null
           id?: string
           image_url?: string
           overall?: number
+          recommendations?: Json | null
           scan_date?: string
           scores?: Json
+          skin_tone?: string | null
           user_id?: string
         }
         Relationships: []
