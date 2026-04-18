@@ -3,17 +3,18 @@ import { Home, ScanFace, Compass, User } from "lucide-react";
 import { motion } from "framer-motion";
 
 const tabs = [
-  { path: "/forge", icon: Home, label: "Home" },
-  { path: "/forge/scan", icon: ScanFace, label: "Scan" },
-  { path: "/forge/discover", icon: Compass, label: "Discover" },
-  { path: "/forge/profile", icon: User, label: "Profile" },
+  { path: "/", icon: Home, label: "Home" },
+  { path: "/scan", icon: ScanFace, label: "Scan" },
+  { path: "/discover", icon: Compass, label: "Discover" },
+  { path: "/profile", icon: User, label: "Profile" },
 ];
 
 const ForgeBottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const hiddenPaths = ["/forge/scan/results", "/forge/settings"];
+  // Hide on certain detail / settings screens
+  const hiddenPaths = ["/settings", "/scans", "/today", "/reset-password", "/auth"];
   if (hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
 
   return (
@@ -21,8 +22,9 @@ const ForgeBottomNav = () => {
       <div className="mx-3 mb-3 rounded-2xl border border-border bg-card/60 backdrop-blur-2xl shadow-elevated">
         <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
           {tabs.map((tab) => {
-            const isActive = location.pathname === tab.path || 
-              (tab.path !== "/forge" && location.pathname.startsWith(tab.path));
+            const isActive = tab.path === "/"
+              ? location.pathname === "/"
+              : location.pathname === tab.path || location.pathname.startsWith(tab.path + "/");
             const Icon = tab.icon;
             return (
               <motion.button

@@ -5,10 +5,10 @@ import { useTheme } from "@/components/ThemeProvider";
 import GlassCard from "../components/GlassCard";
 
 const shortcuts = [
-  { icon: ScanFace, label: "Scan Face", path: "/forge/scan" },
-  { icon: Dumbbell, label: "Start Workout", path: "/forge/discover?tab=exercise" },
-  { icon: Utensils, label: "Log Meal", path: "/forge/discover?tab=nutrition" },
-  { icon: Scissors, label: "Hair Styles", path: "/forge/discover?tab=hair" },
+  { icon: ScanFace, label: "Scan Face", path: "/scan" },
+  { icon: Dumbbell, label: "Workout", path: "/today/workout" },
+  { icon: Utensils, label: "Meals", path: "/today/meals" },
+  { icon: Scissors, label: "Hair Styles", path: "/discover?tab=hair" },
 ];
 
 const ForgeSettings = () => {
@@ -18,7 +18,7 @@ const ForgeSettings = () => {
   return (
     <div className="min-h-screen pb-28">
       <div className="px-5 pt-14 pb-4 flex items-center gap-3">
-        <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate("/forge/profile")}
+        <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)}
           className="w-9 h-9 rounded-full bg-card/60 backdrop-blur-xl border border-border flex items-center justify-center">
           <ArrowLeft className="w-4 h-4 text-foreground" />
         </motion.button>
@@ -26,7 +26,6 @@ const ForgeSettings = () => {
       </div>
 
       <div className="px-5 space-y-4">
-        {/* Quick Shortcuts */}
         <GlassCard>
           <h2 className="font-semibold text-sm text-foreground mb-3">Quick Shortcuts</h2>
           <div className="grid grid-cols-2 gap-2">
@@ -40,7 +39,6 @@ const ForgeSettings = () => {
           </div>
         </GlassCard>
 
-        {/* Preferences */}
         <GlassCard>
           <h2 className="font-semibold text-sm text-foreground mb-3">Preferences</h2>
           <div className="space-y-1">
@@ -57,23 +55,20 @@ const ForgeSettings = () => {
 
             <button className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-muted/50 transition-colors">
               <span className="flex items-center gap-3 text-sm text-foreground">
-                <Bell className="w-4 h-4 text-primary" />
-                Notifications
+                <Bell className="w-4 h-4 text-primary" /> Notifications
               </span>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </button>
 
             <button className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-muted/50 transition-colors">
               <span className="flex items-center gap-3 text-sm text-foreground">
-                <Shield className="w-4 h-4 text-primary" />
-                Privacy
+                <Shield className="w-4 h-4 text-primary" /> Privacy
               </span>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
         </GlassCard>
 
-        {/* About */}
         <GlassCard>
           <div className="flex items-center gap-3 px-1">
             <Info className="w-4 h-4 text-primary" />

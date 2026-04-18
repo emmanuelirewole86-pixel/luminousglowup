@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dumbbell, Scissors, Utensils, Shirt, Search, Heart, ChevronRight, Star, Clock, Flame } from "lucide-react";
+import { Dumbbell, Scissors, Utensils, Shirt, Search, Heart, ChevronRight, Star, Clock, Flame, Sparkles } from "lucide-react";
 import GlassCard from "../components/GlassCard";
 import { exercises, exerciseCategories, Exercise, categoryImages } from "../data/exercises";
 import { hairstyles, faceShapes, HairStyle } from "../data/hairstyles";
 import { recipes, mealCategories, supplements, Recipe } from "../data/nutrition";
 import { outfits, occasions, Outfit } from "../data/clothing";
+import DiscoverChat from "./DiscoverChat";
 
 const tabs = [
+  { id: "chat", icon: Sparkles, label: "Ask AI" },
   { id: "exercise", icon: Dumbbell, label: "Exercise" },
   { id: "hair", icon: Scissors, label: "Hair" },
   { id: "nutrition", icon: Utensils, label: "Nutrition" },
@@ -249,11 +251,11 @@ const ForgeDiscover = () => {
       </div>
 
       <div className="px-5 mb-3">
-        <div className="flex gap-1 p-1 rounded-2xl bg-card/40 backdrop-blur-xl border border-border">
+        <div className="flex gap-1 p-1 rounded-2xl bg-card/40 backdrop-blur-xl border border-border overflow-x-auto scrollbar-hide">
           {tabs.map(tab => (
             <motion.button key={tab.id} whileTap={{ scale: 0.95 }}
               onClick={() => { setTab(tab.id); setExpandedId(null); setSearch(""); }}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`shrink-0 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === tab.id
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground"
@@ -265,6 +267,10 @@ const ForgeDiscover = () => {
         </div>
       </div>
 
+      {activeTab === "chat" ? (
+        <DiscoverChat />
+      ) : (
+      <>
       <div className="px-5 mb-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -328,6 +334,8 @@ const ForgeDiscover = () => {
           </div>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 };

@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ScanFace, Dumbbell, Scissors, Utensils, Shirt, Flame, TrendingUp, ChevronRight } from "lucide-react";
+import { ScanFace, Dumbbell, Scissors, Utensils, Shirt, Flame, TrendingUp, ChevronRight, Images } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { getScans } from "@/lib/store";
-import { ScanResult } from "@/lib/scoring";
+import { getScans, getProfile, FullScan, ProfileData } from "@/lib/store";
 import GlassCard from "../components/GlassCard";
 import ProgressRing from "../components/ProgressRing";
 import fitnessModel1 from "@/assets/fitness-model-1.jpg";
@@ -14,24 +13,24 @@ import fitnessModel3 from "@/assets/fitness-model-3.jpg";
 const fitnessModels = [fitnessModel1, fitnessModel2, fitnessModel3];
 
 const quickAccess = [
-  { icon: Dumbbell, label: "Workouts", path: "/forge/discover?tab=exercise" },
-  { icon: Utensils, label: "Nutrition", path: "/forge/discover?tab=nutrition" },
-  { icon: Scissors, label: "Hair", path: "/forge/discover?tab=hair" },
-  { icon: Shirt, label: "Style", path: "/forge/discover?tab=clothing" },
+  { icon: Dumbbell, label: "Workouts", path: "/discover?tab=exercise" },
+  { icon: Utensils, label: "Nutrition", path: "/discover?tab=nutrition" },
+  { icon: Scissors, label: "Hair", path: "/discover?tab=hair" },
+  { icon: Shirt, label: "Style", path: "/discover?tab=clothing" },
 ];
 
 const featured = [
-  { title: "AI Face Analysis", subtitle: "Know your strengths", icon: ScanFace, path: "/forge/scan" },
-  { title: "Today's Workout", subtitle: "Push Day • 45 min", icon: Dumbbell, path: "/forge/discover?tab=exercise" },
-  { title: "Hair Style Match", subtitle: "Based on your face shape", icon: Scissors, path: "/forge/discover?tab=hair" },
-  { title: "Meal Prep Guide", subtitle: "High protein • 2500 cal", icon: Utensils, path: "/forge/discover?tab=nutrition" },
-  { title: "Smart Casual Fit", subtitle: "Outfit of the day", icon: Shirt, path: "/forge/discover?tab=clothing" },
+  { title: "Today's Workout", subtitle: "Daily plan • by day", icon: Dumbbell, path: "/today/workout" },
+  { title: "Face Analysis", subtitle: "Daily skincare ritual", icon: ScanFace, path: "/today/face" },
+  { title: "Meal Prep Guide", subtitle: "Today's macros", icon: Utensils, path: "/today/meals" },
+  { title: "Smart Casual Fit", subtitle: "Outfit of the day", icon: Shirt, path: "/today/style" },
 ];
 
 const ForgeHome = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [scans, setScans] = useState<ScanResult[]>([]);
+  const [scans, setScans] = useState<FullScan[]>([]);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [greeting, setGreeting] = useState("Good morning");
   const [heroIndex, setHeroIndex] = useState(0);
 
@@ -41,32 +40,50 @@ const ForgeHome = () => {
   }, []);
 
   useEffect(() => {
-    if (user) getScans(user.id).then(setScans);
+    if (!user) return;
+    // Parallel fetch for speed
+    Promise.all([getScans(user.id), getProfile(user.id)]).then(([s, p]) => {
+      setScans(s);
+      setProfile(p);
+    });
   }, [user]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setHeroIndex(prev => (prev + 1) % fitnessModels.length);
-    }, 6000);
+    const interval = setInterval(() => setHeroIndex(prev => (prev + 1) % fitnessModels.length), 6000);
     return () => clearInterval(interval);
   }, []);
 
   const lastScan = scans[0];
-  const userName = user?.user_metadata?.display_name || user?.email?.split("@")[0] || "King";
+  const userName = profile?.display_name?.trim() || user?.email?.split("@")[0] || "King";
+  const initial = (userName[0] || "K").toUpperCase();
 
-  const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
-  const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } } };
+  const container = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
+  const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 320, damping: 26 } } };
 
   return (
     <div className="min-h-screen pb-28">
       {/* Header */}
-      <div className="px-6 pt-14 pb-4">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-sm text-muted-foreground font-medium">{greeting}</p>
-          <h1 className="text-2xl font-bold text-foreground mt-0.5 tracking-tight">
-            {userName} <span>💪</span>
-          </h1>
-        </motion.div>
+      <div className="px-5 pt-14 pb-4">
+        <motion.button
+          onClick={() => navigate("/profile")}
+          whileTap={{ scale: 0.97 }}
+          className="flex items-center gap-3 w-full text-left"
+          initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-border">
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt={userName} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-primary-foreground font-bold text-base">{initial}</span>
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground font-medium">{greeting}</p>
+            <h1 className="text-lg font-bold text-foreground tracking-tight truncate">
+              {userName} <span>💪</span>
+            </h1>
+          </div>
+        </motion.button>
       </div>
 
       <motion.div className="px-5 space-y-4" variants={container} initial="hidden" animate="show">
@@ -91,7 +108,6 @@ const ForgeHome = () => {
             <p className="text-white text-lg font-bold">Forge Your Best Self</p>
             <p className="text-white/70 text-xs mt-0.5">Train • Groom • Elevate</p>
           </div>
-          {/* Dots */}
           <div className="absolute bottom-4 right-5 flex gap-1.5">
             {fitnessModels.map((_, i) => (
               <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === heroIndex ? 'bg-white w-4' : 'bg-white/40'}`} />
@@ -101,14 +117,14 @@ const ForgeHome = () => {
 
         {/* Streak + Score */}
         <motion.div variants={item}>
-          <GlassCard className="flex items-center justify-between">
+          <GlassCard className="flex items-center justify-between cursor-pointer" onClick={() => navigate("/scans")}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
                 <Flame className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground">{scans.length} Day Streak</p>
-                <p className="text-xs text-muted-foreground">Keep it going!</p>
+                <p className="text-xs text-muted-foreground">Tap to view scan history</p>
               </div>
             </div>
             {lastScan && <ProgressRing value={lastScan.overall} size={56} label="Score" />}
@@ -118,10 +134,11 @@ const ForgeHome = () => {
         {/* Daily Overview */}
         {lastScan && (
           <motion.div variants={item}>
-            <GlassCard>
+            <GlassCard onClick={() => navigate(`/scans/${lastScan.id}`)} className="cursor-pointer">
               <div className="flex items-center gap-2 mb-4">
                 <TrendingUp className="w-4 h-4 text-primary" />
-                <h2 className="font-semibold text-sm text-foreground">Daily Overview</h2>
+                <h2 className="font-semibold text-sm text-foreground">Last Scan Overview</h2>
+                <ChevronRight className="w-3.5 h-3.5 text-muted-foreground ml-auto" />
               </div>
               <div className="flex justify-around">
                 <ProgressRing value={lastScan.scores.symmetry} size={52} strokeWidth={4} label="Symmetry" />
@@ -133,7 +150,7 @@ const ForgeHome = () => {
           </motion.div>
         )}
 
-        {/* Featured Carousel */}
+        {/* Featured */}
         <motion.div variants={item}>
           <h2 className="font-semibold text-sm text-foreground mb-3 px-1">Featured</h2>
           <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide -mx-5 px-5">
@@ -154,7 +171,7 @@ const ForgeHome = () => {
           </div>
         </motion.div>
 
-        {/* Quick Access Grid */}
+        {/* Quick Access */}
         <motion.div variants={item}>
           <h2 className="font-semibold text-sm text-foreground mb-3 px-1">Quick Access</h2>
           <div className="grid grid-cols-2 gap-3">
@@ -176,10 +193,24 @@ const ForgeHome = () => {
           </div>
         </motion.div>
 
+        {/* Scan history shortcut */}
+        {scans.length > 0 && (
+          <motion.div variants={item}>
+            <motion.button whileTap={{ scale: 0.97 }} onClick={() => navigate("/scans")}
+              className="w-full flex items-center justify-between p-4 rounded-2xl bg-card/60 backdrop-blur-xl border border-border">
+              <span className="flex items-center gap-3 text-sm font-semibold text-foreground">
+                <Images className="w-4 h-4 text-primary" />
+                View All Scans ({scans.length})
+              </span>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </motion.button>
+          </motion.div>
+        )}
+
         {/* Scan CTA */}
         <motion.div variants={item}>
           <motion.button
-            onClick={() => navigate("/forge/scan")}
+            onClick={() => navigate("/scan")}
             whileTap={{ scale: 0.97 }}
             className="w-full rounded-2xl bg-primary p-5 text-left shadow-glow relative overflow-hidden"
           >

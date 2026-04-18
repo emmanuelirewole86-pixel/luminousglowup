@@ -6,18 +6,25 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 
-// Forge imports
 import ForgeLayout from "./forge/components/ForgeLayout";
 import ForgeHome from "./forge/pages/ForgeHome";
 import ForgeScan from "./forge/pages/ForgeScan";
 import ForgeDiscover from "./forge/pages/ForgeDiscover";
 import ForgeProfile from "./forge/pages/ForgeProfile";
 import ForgeSettings from "./forge/pages/ForgeSettings";
+import ScanHistory from "./forge/pages/ScanHistory";
+import ScanDetail from "./forge/pages/ScanDetail";
+import TodayWorkout from "./forge/pages/TodayWorkout";
+import TodayFace from "./forge/pages/TodayFace";
+import TodayMeals from "./forge/pages/TodayMeals";
+import TodayStyle from "./forge/pages/TodayStyle";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 60_000, refetchOnWindowFocus: false } },
+});
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -38,16 +45,21 @@ const AppRoutes = () => (
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
     <Route path="/reset-password" element={<ResetPassword />} />
 
-    {/* Forge App — Primary, mounted at root */}
     <Route path="/" element={<ProtectedRoute><ForgeLayout /></ProtectedRoute>}>
       <Route index element={<ForgeHome />} />
       <Route path="scan" element={<ForgeScan />} />
       <Route path="discover" element={<ForgeDiscover />} />
       <Route path="profile" element={<ForgeProfile />} />
       <Route path="settings" element={<ForgeSettings />} />
+      <Route path="scans" element={<ScanHistory />} />
+      <Route path="scans/:id" element={<ScanDetail />} />
+      <Route path="today/workout" element={<TodayWorkout />} />
+      <Route path="today/face" element={<TodayFace />} />
+      <Route path="today/meals" element={<TodayMeals />} />
+      <Route path="today/style" element={<TodayStyle />} />
     </Route>
 
-    {/* Legacy /forge paths redirect to root */}
+    {/* Legacy redirects */}
     <Route path="/forge" element={<Navigate to="/" replace />} />
     <Route path="/forge/scan" element={<Navigate to="/scan" replace />} />
     <Route path="/forge/discover" element={<Navigate to="/discover" replace />} />

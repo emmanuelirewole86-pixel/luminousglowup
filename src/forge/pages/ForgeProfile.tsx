@@ -95,7 +95,7 @@ const ForgeProfile = () => {
     <div className="min-h-screen pb-28">
       <div className="px-5 pt-14 pb-6 flex items-center justify-between">
         <h1 className="text-xl font-bold text-foreground">Profile</h1>
-        <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate("/forge/settings")}
+        <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate("/settings")}
           className="w-9 h-9 rounded-full bg-card/60 backdrop-blur-xl border border-border flex items-center justify-center">
           <Settings className="w-4 h-4 text-muted-foreground" />
         </motion.button>
