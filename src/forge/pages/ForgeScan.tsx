@@ -93,13 +93,16 @@ const ForgeScan = () => {
 
       if (user) {
         const overall = computeOverall(result);
+        const scanId = crypto.randomUUID();
         await saveScan({
-          id: crypto.randomUUID(),
+          id: scanId,
           date: new Date().toLocaleDateString(),
           imageUrl,
           scores: result,
           overall,
         }, user.id);
+        // Navigate to scan detail where users can run AI vision analysis
+        setTimeout(() => navigate(`/scans/${scanId}`), 800);
       }
     } catch (err) {
       setStage("error");
@@ -119,7 +122,7 @@ const ForgeScan = () => {
   return (
     <div className="min-h-screen pb-28">
       <div className="px-5 pt-14 pb-4 flex items-center gap-3">
-        <motion.button whileTap={{ scale: 0.9 }} onClick={() => { stopCamera(); navigate("/forge"); }}
+        <motion.button whileTap={{ scale: 0.9 }} onClick={() => { stopCamera(); navigate(-1); }}
           className="w-9 h-9 rounded-full bg-card/60 backdrop-blur-xl border border-border flex items-center justify-center">
           <ArrowLeft className="w-4 h-4 text-foreground" />
         </motion.button>
