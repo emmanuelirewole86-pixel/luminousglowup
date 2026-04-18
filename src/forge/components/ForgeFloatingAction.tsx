@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, ScanFace, Utensils, Dumbbell, Shirt, X } from "lucide-react";
+import { Plus, ScanFace, Utensils, Dumbbell, MessageCircle, X } from "lucide-react";
 
 const actions = [
-  { icon: ScanFace, label: "Scan Face", path: "/forge/scan" },
-  { icon: Dumbbell, label: "Workout", path: "/forge/discover?tab=exercise" },
-  { icon: Utensils, label: "Log Meal", path: "/forge/discover?tab=nutrition" },
-  { icon: Shirt, label: "Style", path: "/forge/discover?tab=clothing" },
+  { icon: ScanFace, label: "Scan Face", path: "/scan" },
+  { icon: Dumbbell, label: "Today's Workout", path: "/today/workout" },
+  { icon: Utensils, label: "Today's Meals", path: "/today/meals" },
+  { icon: MessageCircle, label: "Ask AI Coach", path: "/discover?tab=chat" },
 ];
 
 const ForgeFloatingAction = () => {
